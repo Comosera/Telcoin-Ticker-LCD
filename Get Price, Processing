@@ -1,0 +1,36 @@
+import http.requests.*;
+import processing.serial.*;
+
+
+// connect to port that Arduino is on
+  Serial arduino;
+
+// create GetRequest Object
+  GetRequest get = new GetRequest("https://api.thingspeak.com/apps/thinghttp/send_request?api_key=USA8MCZTCVW4ID1N");
+  //GetRequest get = new GetRequest("https://api.thingspeak.com/apps/thinghttp/send_request?api_key=CLQK4KKUI3DCW53U"); //SPAN
+public void setup() {
+  size(400, 400);
+  
+  //** print a list of serial ports for debugging
+  printArray(Serial.list());
+  
+  //** Set up Serial Port
+  String portName = Serial.list()[2];
+  arduino = new Serial(this, portName, 9600);
+  
+}
+
+void draw() {
+  background(255);
+  String t = getPriceTEL();
+  arduino.write(t);
+}
+
+String getPriceTEL() {
+  
+  get.send(); // d program will wait untill the request is completed
+  String data = get.getContent();
+  println("Price of Telcoin: " + get.getContent());
+  delay(4000);
+  return data;
+}
